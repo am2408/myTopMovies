@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <title>Rated Films</title>
+</head>
+
+<body onload="getAllLang();">
+  <nav class="navbar">
+    <ul class="menu">
+      <li class="item">
+        <select name="lang" id="lang" onchange="changeLangHome(this);"></select>
+      </li>
+      <li class="item">Connexion</li>
+    </ul>
+  </nav>
+  <div id="container">
+    <div class="section">
+      <h1 class="title titleMain">Films les plus populaire</h1>
+      <div id="popular" class="list"></div>
+    </div>
+    <div class="section">
+      <h1 class="title titleMain">Films les mieux notés</h1>
+      <div id="top" class="list"></div>
+    </div>
+    <div class="section">
+      <h1 class="title titleMain">Dernière sortie ou à venir</h1>
+      <div id="upcoming" class="list"></div>
+    </div>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

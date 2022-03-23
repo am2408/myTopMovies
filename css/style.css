@@ -1,0 +1,128 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+#container {
+    width: 80%;
+    margin: auto;
+}
+
+
+/* HOME PAGE */
+
+.navbar {
+    position: sticky;
+    top: 0;
+}
+
+.menu {
+    display: flex;
+    align-content: center;
+    justify-content: end;
+    list-style: none;
+}
+
+.section {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.titleMain {
+    width: 100%;
+}
+
+.list {
+    display: flex;
+    margin: 15px;
+    overflow: hidden;
+    overflow-x: scroll;
+    background-image: linear-gradient(to right, white, white), linear-gradient(to right, white, white), linear-gradient(to right, rgba(0, 0, 20, .75), rgba(255, 255, 255, 0)), linear-gradient(to left, rgba(0, 0, 20, .75), rgba(255, 255, 255, 0));
+    background-position: left center, right center, left center, right center;
+    background-repeat: no-repeat;
+    background-color: white;
+    background-size: 20px 100%, 20px 100%, 10px 100%, 10px 100%;
+    background-attachment: local, local, scroll, scroll;
+}
+
+.movies {
+    position: relative;
+    margin: 15px;
+    text-decoration: none;
+    color: black;
+}
+
+.movies .pics {
+    width: 200px;
+    height: 300px;
+}
+
+.movies .note {
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    display: block;
+}
+
+.noteVal {
+    fill: white;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.circle {
+    fill: #000000c7;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    animation: progress 1s ease-out forwards;
+}
+
+.movies .contentImg {
+    width: 200px;
+    height: 300px;
+    position: relative;
+}
+
+.movies .date {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 200px;
+    background: #000000c7;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.movies .title {
+    white-space: nowrap;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.titleMovie {
+    font-family: 'Franklin Gothic Medium';
+}
+
+.titleSecond {
+    font-family: 'Goudy Old Style';
+    color: lightslategray;
+    font-style: italic;
+}
+
+
+/* DETAILS PAGE */
+
+
+/* ANIMATIONS */
+
+@keyframes progress {
+    0% {
+        stroke-dasharray: 0 100;
+    }
+}
