@@ -5,15 +5,25 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="#" />
   <link rel="stylesheet" href="css/style.css">
-  <title>Rated Films</title>
+  <title>My Top 100 Movies</title>
 </head>
 
-<body onload="getAllLang();">
+<body>
   <nav class="navbar">
     <ul class="menu">
       <li class="item">
-        <select name="lang" id="lang" onchange="changeLangHome(this);"></select>
+        <select name="home" id="home" class="selectLang" onchange="changeLang(this);">
+          <?php
+          foreach ($languages as $lang) {
+            if ($_COOKIE["lang"] == $lang['value']) { ?>
+              <option value="<?= $lang['value'] ?>" selected='selected'><?= $lang['name'] ?></option>
+            <?php } else { ?>
+              <option value="<?= $lang['value'] ?>"><?= $lang['name'] ?></option>
+            <?php } ?>
+          <?php } ?>
+        </select>
       </li>
       <li class="item">Connexion</li>
     </ul>
@@ -21,17 +31,117 @@
   <div id="container">
     <div class="section">
       <h1 class="title titleMain">Films les plus populaire</h1>
-      <div id="popular" class="list"></div>
+      <div id="popular" class="list">
+        <?php
+        foreach ($popularMovies as $popularMovie) { ?>
+          <a href="details.php?id=<?= $popularMovie['id'] ?>" class="movies">
+            <div class="contentImg">
+              <img src="<?= $popularMovie['image'] ?>" alt="movie pic" class="pics">
+              <svg viewbox="0 0 36 36" class="note">
+                <?php
+                $note = round((float)$popularMovie['note'] * 10);
+                if (!is_decimal($popularMovie['note'])) {
+                  $xPos = 13;
+                } else {
+                  $xPos = 7;
+                }
+                if ($note >= 75) { ?>
+                  <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='#4CC790' class="circle"></path>
+                <?php } else if ($note < 75 && $note >= 50) { ?>
+                  <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='yellow' class="circle"></path>
+                <?php } else if ($note < 50 && $note >= 25) { ?>
+                  <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='orange' class="circle"></path>
+                <?php } else if ($note < 25) { ?>
+                  <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='red' class="circle"></path>
+                <?php } ?>
+                <text x="<?= $xPos ?>" y="23" class="noteVal"><?= $popularMovie['note'] ?></text>
+              </svg>
+              <small class="date"><?= $popularMovie['date'] ?></small>
+            </div>
+            <h2 class="title titleMovie"><?= $popularMovie['originalTitle'] ?></h2>
+            <h3 class="title titleSecond"><?= $popularMovie['title'] ?></h3>
+          </a>
+        <?php } ?>
+      </div>
     </div>
     <div class="section">
       <h1 class="title titleMain">Films les mieux notés</h1>
-      <div id="top" class="list"></div>
+      <div id="overrated" class="list">
+        <?php
+        foreach ($topRatedMovies as $topRatedMovie) { ?>
+          <a href="details.php?id=<?= $topRatedMovie['id'] ?>" class="movies">
+            <div class="contentImg">
+              <img src="<?= $topRatedMovie['image'] ?>" alt="movie pic" class="pics">
+              <svg class="note">
+                <?php
+                $note = round((float)$topRatedMovie['note'] * 10);
+                if (!is_decimal($topRatedMovie['note'])) {
+                  $xPos = 13;
+                } else {
+                  $xPos = 7;
+                }
+                if ($note >= 75) { ?>
+                  <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='#4CC790' class="circle"></path>
+                <?php } else if ($note < 75 && $note >= 50) { ?>
+                  <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='yellow' class="circle"></path>
+                <?php } else if ($note < 50 && $note >= 25) { ?>
+                  <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='orange' class="circle"></path>
+                <?php } else if ($note < 25) { ?>
+                  <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='red' class="circle"></path>
+                <?php } ?>
+                <text x="<?= $xPos ?>" y="23" class="noteVal"><?= $topRatedMovie['note'] ?></text>
+              </svg>
+              <small class="date"><?= $topRatedMovie['date'] ?></small>
+            </div>
+            <h2 class="title titleMovie"><?= $topRatedMovie['originalTitle'] ?></h2>
+            <h3 class="title titleSecond"><?= $topRatedMovie['title'] ?></h3>
+          </a>
+        <?php } ?>
+      </div>
     </div>
     <div class="section">
       <h1 class="title titleMain">Dernière sortie ou à venir</h1>
-      <div id="upcoming" class="list"></div>
+      <div id="upcoming" class="list">
+        <?php
+        foreach ($upcomingMovies as $upcomingMovie) {
+          $date = $upcomingMovie['date'];
+          $date1 = new DateTime($date);
+          $today = new DateTime();
+        ?>
+          <a href="details.php?id=<?= $upcomingMovie['id'] ?>" class="movies">
+            <div class="contentImg">
+              <img src="<?= $upcomingMovie['image'] ?>" alt="movie pic" class="pics">
+              <?php if ($today > $date1) { ?>
+                <svg class="note">
+                  <?php
+                  $note = round((float)$upcomingMovie['note'] * 10);
+                  if (!is_decimal($upcomingMovie['note'])) {
+                    $xPos = 13;
+                  } else {
+                    $xPos = 7;
+                  }
+                  if ($note >= 75) { ?>
+                    <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='#4CC790' class="circle"></path>
+                  <?php } else if ($note < 75 && $note >= 50) { ?>
+                    <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='yellow' class="circle"></path>
+                  <?php } else if ($note < 50 && $note >= 25) { ?>
+                    <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='orange' class="circle"></path>
+                  <?php } else if ($note < 25) { ?>
+                    <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='red' class="circle"></path>
+                  <?php } ?>
+                  <text x="<?= $xPos ?>" y="23" class="noteVal"><?= $upcomingMovie['note'] ?></text>
+                </svg>
+              <?php } ?>
+              <small class="date"><?= $date ?></small>
+            </div>
+            <h2 class="title titleMovie"><?= $upcomingMovie['originalTitle'] ?></h2>
+            <h3 class="title titleSecond"><?= $upcomingMovie['title'] ?></h3>
+          </a>
+        <?php } ?>
+      </div>
     </div>
-    <script src="js/main.js"></script>
+  </div>
+  <script src="js/main.js" defer></script>
 </body>
 
 </html>

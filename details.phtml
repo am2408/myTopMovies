@@ -5,23 +5,384 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="<?= $movieDetails['pagePic'] ?>" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" type="text/css" href="slider/slick/slick.css" />
+  <link rel="stylesheet" type="text/css" href="slider/slick/slick-theme.css" />
   <link rel="stylesheet" href="css/style.css">
-  <title>Détails du film</title>
+  <title>Détails du film (<?= $movieDetails['title'] ?>)</title>
 </head>
 
-<body onload="getMovie('<?= $id ?>', getCookie('lang')); getLang(getCookie('lang'));">
+<body>
   <nav class="navbar">
     <ul class="menu">
       <li class="item">
-        <select name="lang" id="lang" onchange="changeLangDetail('<?= $id ?>', this);"></select>
+        <select name="lang" id="lang" onchange="changeLang(this);">
+          <?php
+          foreach ($languages as $lang) {
+            if ($_COOKIE["lang"] == $lang['value']) { ?>
+              <option value="<?= $lang['value'] ?>" selected='selected'><?= $lang['name'] ?></option>
+            <?php } else { ?>
+              <option value="<?= $lang['value'] ?>"><?= $lang['name'] ?></option>
+            <?php } ?>
+          <?php } ?>
+        </select>
       </li>
       <li class="item">Connexion</li>
     </ul>
   </nav>
   <div id="container">
-    <a href="index.php">Back</a>
-    <div id="details"></div>
-    <script src="js/main.js"></script>
+    <?php if ($movieDetails['background'] != 'nope') { ?>
+      <div id="background" style="background-image: url(<?= $movieDetails['background'] ?>);">
+      <?php } else { ?>
+        <div id="background" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 1) 150px, rgba(0, 0, 0, 0.7) 100%);">
+        <?php } ?>
+        <a href="index.php" id="back"></a>
+        <div id="top" style="background-image: linear-gradient(to right, rgba(<?= $movieDetails['mainColor'] ?> 1) 150px, rgba(<?= $movieDetails['mainColor'] ?> 0.7) 100%);">
+          <div id="poster">
+            <div class="contentImg">
+              <img src="<?= $movieDetails['poster'] ?>" alt="movie pic" class="pics">
+              <?php
+              $date = $movieDetails['date'];
+              $date1 = new DateTime($date);
+              $today = new DateTime();
+              if ($today > $date1) {
+              ?>
+                <svg viewbox="0 0 36 36" class="note">
+                  <?php
+                  $note = round((float)$movieDetails['note'] * 10);
+                  // if (!is_decimal($movieDetails['note'])) {
+                  if (!is_decimal(round($movieDetails['note'], 1))) {
+                    if (strlen(round($movieDetails['note'], 1)) == 2) {
+                      $xPos = 9;
+                    } else {
+                      $xPos = 13;
+                    }
+                  } else {
+                    $xPos = 7;
+                  }
+                  if ($note >= 75) { ?>
+                    <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='#4CC790' class="circle"></path>
+                  <?php } else if ($note < 75 && $note >= 50) { ?>
+                    <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='yellow' class="circle"></path>
+                  <?php } else if ($note < 50 && $note >= 25) { ?>
+                    <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='orange' class="circle"></path>
+                  <?php } else if ($note < 25) { ?>
+                    <path stroke-dasharray="<?= $note ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='red' class="circle"></path>
+                  <?php } ?>
+                  <text x="<?= $xPos ?>" y="23" class="noteVal"><?= round($movieDetails['note'], 1) ?></text>
+                </svg>
+            </div>
+          <?php } ?>
+          <?php if ($movieDetails['video'] != 'nope') { ?>
+            <div id="video" onclick="trailer();" style="background: rgba(<?= $movieDetails['mainColor'] ?> 1);"><i class="fa-solid fa-play"></i> Regarder la bande annonce</div>
+          <?php } ?>
+          </div>
+          <div id="movieInfo">
+            <h1 class="title titleMain"><?= $movieDetails['title'] ?> <span>(<?= strtoupper($movieDetails['originalLanguage']) ?>)</span>
+              <?php if ($movieDetails['time'] != null) { ?>
+                <small>(<?= $movieDetails['originalTitle'] ?> &#x2022; <?= $movieDetails['time'] ?>)</small>
+              <?php } else { ?>
+                <small>(<?= $movieDetails['originalTitle'] ?>)</small>
+              <?php } ?>
+            </h1>
+            <?php if ($movieDetails['website'] != 'nope') { ?>
+              <div class="section" id="website">
+                <h2 class="title titleSecond">Site officiel:</h2>
+                <a href="<?= $movieDetails['website'] ?>" class="text"><?= $movieDetails['website'] ?></a>
+              </div>
+            <?php } ?>
+            <?php if ($movieDetails['synop'] != '') { ?>
+              <div class="section" id="synop">
+                <h2 class="title titleSecond">Synopsis:</h2>
+                <p class="text" style="text-indent: 25px;"><?= $movieDetails['synop'] ?></p>
+              </div>
+            <?php } ?>
+            <?php if ($movieDetails['genres'] != null) { ?>
+              <div class="section" id="genres">
+                <h2 class="title titleSecond">Genre(s):</h2>
+                <?php
+                $i = 1;
+                $genres = '';
+                foreach ($movieDetails['genres'] as $genre) {
+                  if ($i == count($movieDetails['genres'])) {
+                    $genres .= $genre;
+                  } else {
+                    $genres .= $genre . ', ';
+                    $i++;
+                  }
+                } ?>
+                <p class="text"><?= $genres ?></p>
+              </div>
+            <?php } ?>
+            <?php if ($movieDetails['date'] != null) { ?>
+              <div class="section" id="release">
+                <h2 class="title titleSecond">Date de sortie:</h2>
+                <p class="text"><?= $movieDetails['date'] ?></p>
+              </div>
+            <?php } ?>
+            <?php if ($movieDetails['productionCompanies'] != 'nope') { ?>
+              <div class="section" id="productions">
+                <h2 class="title titleSecond">Studio(s) / Production:</h2>
+                <div class="prodPics">
+                  <?php foreach ($movieDetails['productionCompanies'] as $prod) { ?>
+                    <img src="<?= $prod['image'] ?>" title="<?= $prod['name'] ?>" alt="<?= $prod['name'] ?>" class="pics">
+                  <?php } ?>
+                </div>
+              </div>
+            <?php } ?>
+            <?php if ($movieDetails['crew'] != null) { ?>
+              <div class="section" id="member">
+                <h2 class="title titleSecond">Directeur:</h2>
+                <p class="text"><?= $movieDetails['crew']['name'] ?></p>
+              </div>
+            <?php } ?>
+          </div>
+        </div>
+        </div>
+        <div id="bottom">
+          <div class="blocInfo">
+            <h2 class="title titleMain">Cast</h2>
+            <div class="section slider" id="cast">
+              <?php foreach ($movieDetails['cast'] as $member) { ?>
+                <a href="celebrity.php?id=<?= $member['id'] ?>" class="people">
+                  <img src="<?= $member['image'] ?>" alt="<?= $member['name'] ?>">
+                  <div class="name">
+                    <!-- <p class="text"><= $member['name'] ?> (<= $member['originalName'] ?>)</p> -->
+                    <p class="text"><?= $member['name'] ?></p>
+                    <small><?= $member['characters'] ?></small>
+                  </div>
+                </a>
+              <?php } ?>
+            </div>
+          </div>
+          <?php if ($movieDetails['pics'] != null) { ?>
+            <div class="blocInfo">
+              <h2 class="title titleMain">Photo(s)</h2>
+              <div id="screens">
+                <div class="slider slider-single">
+                  <?php foreach ($movieDetails['pics'] as $pic) { ?>
+                    <img src="https://image.tmdb.org/t/p/original<?= $pic ?>" alt="<?= $movieDetails['title'] ?>">
+                  <?php } ?>
+                </div>
+                <div class="slider slider-nav">
+                  <?php foreach ($movieDetails['pics'] as $pic) { ?>
+                    <img src="https://image.tmdb.org/t/p/w300<?= $pic ?>" alt="<?= $movieDetails['title'] ?>">
+                  <?php } ?>
+                </div>
+              </div>
+            </div>
+          <?php } ?>
+          <?php if ($movieDetails['similar'] != null && count($movieDetails['similar']) >= 5) { ?>
+            <div class="blocInfo">
+              <h2 class="title titleMain">Voir aussi</h2>
+              <div class="section slider" id="similar">
+                <?php
+                foreach ($movieDetails['similar'] as $movie) { ?>
+                  <a href="details.php?id=<?= $movie['id'] ?>" class="movies">
+                    <div class="contentImg" style="margin: auto;">
+                      <img src="<?= $movie['image'] ?>" alt="movie pic" class="pics">
+                      <?php
+                      $dateSimilar = $movie['date'];
+                      $date1Similar = new DateTime($dateSimilar);
+                      $today = new DateTime();
+                      if ($today > $date1Similar) {
+                      ?>
+                        <svg viewbox="0 0 36 36" class="note">
+                          <?php
+                          $noteSimilar = round((float)$movie['note'] * 10);
+                          if (!is_decimal(round($movie['note'], 1))) {
+                            if (strlen(round($movie['note'], 1)) == 2) {
+                              $xPos = 9;
+                            } else {
+                              $xPos = 13;
+                            }
+                          } else {
+                            $xPos = 7;
+                          }
+                          if ($noteSimilar >= 75) { ?>
+                            <path stroke-dasharray="<?= $noteSimilar ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='#4CC790' class="circle"></path>
+                          <?php } else if ($noteSimilar < 75 && $noteSimilar >= 50) { ?>
+                            <path stroke-dasharray="<?= $noteSimilar ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='yellow' class="circle"></path>
+                          <?php } else if ($noteSimilar < 50 && $noteSimilar >= 25) { ?>
+                            <path stroke-dasharray="<?= $noteSimilar ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='orange' class="circle"></path>
+                          <?php } else if ($noteSimilar < 25) { ?>
+                            <path stroke-dasharray="<?= $noteSimilar ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='red' class="circle"></path>
+                          <?php } ?>
+                          <text x="<?= $xPos ?>" y="23" class="noteVal"><?= round($movie['note'], 1) ?></text>
+                        </svg>
+                      <?php } ?>
+                      <?php if ($movie['date'] != null) { ?>
+                        <small class="date"><?= $movie['date'] ?></small>
+                      <?php } ?>
+                    </div>
+                    <h2 class="title titleMovie" style="margin: auto;"><?= $movie['originalTitle'] ?></h2>
+                    <h3 class="title titleSecond" style="margin: auto;"><?= $movie['title'] ?></h3>
+                  </a>
+                <?php } ?>
+              </div>
+            </div>
+          <?php } ?>
+        </div>
+      </div>
+  </div>
+  <iframe id="trailer" type="text/html" allowfullscreen="" src="" frameborder="0"></iframe>
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script type="text/javascript" src="slider/slick/slick.min.js"></script>
+  <script src="js/lottie.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    let open = false;
+    let first = false;
+
+    $(document).mouseup(function(e) {
+      let container = $("#trailer");
+      if (!container.is(e.target) && container.has(e.target).length === 0 && open) {
+        document.getElementById('trailer').style.transform = 'translate(-50%, -50%) scale(0)';
+        document.querySelector('body').classList = '';
+        open = false;
+      }
+    });
+
+    function trailer() {
+      if (!first) {
+        document.getElementById('trailer').src = `<?= $movieDetails['video'] ?>`;
+        first = true;
+      }
+      document.querySelector('body').classList = 'dark';
+      document.getElementById('trailer').style.transform = 'translate(-50%, -50%) scale(1)';
+      open = true;
+    }
+
+    $('#cast.slider').slick({
+      arrows: false,
+      infinite: true,
+      slidesToShow: 5,
+      slidesToScroll: 5,
+      dots: true,
+      autoplay: true,
+      autoplaySpeed: 2000,
+      responsive: [{
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
+        }
+      }, {
+        breakpoint: 640,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          dots: false,
+        }
+      }, {
+        breakpoint: 420,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          dots: false,
+        },
+      }],
+    });
+
+    $('.slider-single').slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: false,
+      fade: true,
+      adaptiveHeight: true,
+      speed: 600,
+      asNavFor: '.slider-nav',
+      responsive: [{
+        breakpoint: 300,
+        settings: {
+          arrows: true,
+        },
+      }, ],
+    });
+
+    let fixedLength;
+
+    if (`<?= count($movieDetails['pics']) ?>` != null && `<?= count($movieDetails['pics']) ?>` > 3) {
+      fixedLength = 3;
+    } else {
+      fixedLength = 2;
+    }
+
+    $('.slider-nav').slick({
+      slidesToShow: fixedLength,
+      slidesToScroll: 1,
+      asNavFor: '.slider-single',
+      dots: false,
+      centerMode: true,
+      focusOnSelect: true,
+      responsive: [{
+        breakpoint: 700,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      }, {
+        breakpoint: 500,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      }],
+    });
+
+    $('#similar.slider').slick({
+      arrows: false,
+      infinite: true,
+      slidesToShow: 5,
+      slidesToScroll: 5,
+      dots: false,
+      autoplay: true,
+      autoplaySpeed: 2000,
+      responsive: [{
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
+        }
+      }, {
+        breakpoint: 1000,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+        }
+      }, {
+        breakpoint: 700,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+        }
+      }, {
+        breakpoint: 500,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      }],
+    });
+
+    let backIcon = document.getElementById('back');
+    let animation = bodymovin.loadAnimation({
+      container: backIcon,
+      path: 'images/back.json',
+      renderer: 'svg',
+      autoplay: false,
+      loop: true,
+    });
+
+    $(backIcon).mouseover(() => {
+      animation.play();
+    });
+    $(backIcon).mouseout(() => {
+      animation.stop();
+    });
+  </script>
 </body>
 
 </html>
