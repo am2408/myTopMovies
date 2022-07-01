@@ -151,7 +151,8 @@ body {
     position: relative;
 }
 
-#back {
+#back,
+#back2 {
     position: absolute;
     margin: 10px;
     top: 0;
@@ -160,7 +161,8 @@ body {
     width: 50px;
 }
 
-#back * {
+#back *,
+#back2 * {
     pointer-events: none;
 }
 
@@ -225,7 +227,8 @@ body {
     width: 50px;
 }
 
-#movieInfo {
+#movieInfo,
+#celebrityInfo {
     width: 60%;
 }
 
@@ -367,6 +370,31 @@ body {
     cursor: default;
 }
 
+.select {
+    display: flex;
+    margin: 30px 0;
+}
+
+.choice input {
+    display: none;
+}
+
+.choice {
+    padding: 15px;
+}
+
+.choice input:checked~label {
+    background: #aaa;
+    cursor: default;
+}
+
+.choice label {
+    padding: 15px;
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: all 500ms;
+}
+
 
 /* ANIMATIONS */
 
@@ -396,7 +424,8 @@ body {
     #top {
         flex-direction: column;
     }
-    #movieInfo {
+    #movieInfo,
+    #celebrityInfo {
         width: 100%;
     }
     #movieInfo #productions {

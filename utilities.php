@@ -91,6 +91,7 @@ function getMovies($type, $lang)
       'image' => 'https://image.tmdb.org/t/p/w300' . $movie['poster_path'],
       'date' => $movie['release_date'],
       'note' => $movie['vote_average'],
+      'voteCount' => $movie['vote_count'],
     ];
     array_push($movies, $value);
   }
@@ -117,6 +118,7 @@ function getSimilar($id, $lang)
       'image' => $pic,
       'date' => $movie['release_date'],
       'note' => $movie['vote_average'],
+      'voteCount' => $movie['vote_count'],
     ];
     array_push($movies, $value);
   }
@@ -342,6 +344,7 @@ function getMovie($id, $lang)
     'video' => $video,
     'pics' => $pics,
     'similar' => $similar,
+    'voteCount' => $contentMovie['vote_count'],
   ];
 
   return $movieDetails;
@@ -354,81 +357,60 @@ function search($search, $lang)
 
 function getCelebrity($id, $lang)
 {
-  $celebrityDetails = [];
+  $celebrityMovies = [];
+  //$celebrityTv = [];
 
-  // MOVIE'S INFO //
+  $contentCelebrity = json_decode(file_get_contents('https://api.themoviedb.org/3/person/' . $id . '?api_key=c8e8c5853cd1fa6ba48f561f7b4f168f&language=' . $lang), true);
+  $contentCelebrityMovies = json_decode(file_get_contents('https://api.themoviedb.org/3/person/' . $id . '/movie_credits?api_key=c8e8c5853cd1fa6ba48f561f7b4f168f&language=' . $lang), true);
+  // $contentCelebrityTv = json_decode(file_get_contents('https://api.themoviedb.org/3/person/' . $id . '/tv_credits?api_key=c8e8c5853cd1fa6ba48f561f7b4f168f&language=' . $lang), true);
 
-  $contentCelebrity = json_decode(file_get_contents('https://api.themoviedb.org/3/person/'.$id.'?api_key=c8e8c5853cd1fa6ba48f561f7b4f168f&language='.$lang), true);
-  $celebrityMovies = json_decode(file_get_contents('https://api.themoviedb.org/3/person/'.$id.'/movie_credits?api_key=c8e8c5853cd1fa6ba48f561f7b4f168f&language='.$lang), true);
-  $celebrityTv = json_decode(file_get_contents('https://api.themoviedb.org/3/person/'.$id.'/tv_credits?api_key=c8e8c5853cd1fa6ba48f561f7b4f168f&language='.$lang), true);
+  foreach ($contentCelebrityMovies['cast'] as $movie) {
+    if ($movie['poster_path'] != null) {
+      $poster = 'https://image.tmdb.org/t/p/w200' . $movie['poster_path'];
+    }else{
+      $poster = 'images/noPic2.jpg';
+    }
+    $movieInfo = [
+      'id' => $movie['id'],
+      'title' => $movie['title'],
+      'originalTitle' => $movie['original_title'],
+      'poster' => $poster,
+      'date' => $movie['release_date'],
+      'note' => $movie['vote_average'],
+      'voteCount' => $movie['vote_count'],
+    ];
+    array_push($celebrityMovies, $movieInfo);
+  }
 
-var_dump($celebrityMovies);
-
-  // // MOVIE'S GENRES
-
-  // $genres = [];
-
-  // foreach ($contentMovie['genres'] as $genreName) {
-  //   array_push($genres, $genreName['name']);
-  // }
-
-  // $cast = [];
-
-  // foreach ($castContent['cast'] as $people) {
-  //   if ($people['profile_path'] != null) {
-  //     $peopleInfo = [
-  //       'id' => $people['id'],
-  //       'name' => $people['name'],
-  //       'originalName' => $people['original_name'],
-  //       'image' => 'https://image.tmdb.org/t/p/w300' . $people['profile_path'],
-  //       'characters' => $people['character'],
-  //     ];
-  //   } else {
-  //     $peopleInfo = [
-  //       'id' => $people['id'],
-  //       'name' => $people['name'],
-  //       'originalName' => $people['original_name'],
-  //       'image' => 'images/noPic.png',
-  //       'characters' => $people['character'],
-  //     ];
+  // foreach ($contentCelebrityTv['cast'] as $movie) {
+  //   if ($movie['poster_path'] != null) {
+  //     $poster = 'https://image.tmdb.org/t/p/w200' . $movie['poster_path'];
+  //   }else{
+  //     $poster = 'images/noPic2.jpg';
   //   }
-  //   array_push($cast, $peopleInfo);
+  //   $movieInfo = [
+  //     'id' => $movie['id'],
+  //     'title' => $movie['name'],
+  //     'originalTitle' => $movie['original_name'],
+  //     'poster' => $poster,
+  //     'date' => $movie['first_air_date'],
+  //     'note' => $movie['vote_average'],
+  //     'voteCount' => $movie['vote_count'],
+  //   ];
+  //   array_push($celebrityTv, $movieInfo);
   // }
 
-  // // MOVIE'S PICS
+  $celebrityDetails = [
+    'id' => $contentCelebrity['id'],
+    'name' => $contentCelebrity['name'],
+    'bio' => $contentCelebrity['biography'],
+    'birth' => $contentCelebrity['birthday'],
+    'death' => $contentCelebrity['deathday'],
+    'job' => $contentCelebrity['known_for_department'],
+    'place' => $contentCelebrity['place_of_birth'],
+    'pic' => 'https://image.tmdb.org/t/p/w400' . $contentCelebrity['profile_path'],
+    'movies' => $celebrityMovies,
+  ];
 
-  // $pics = [];
-
-  // $images = json_decode(file_get_contents('https://api.themoviedb.org/3/movie/' . $id . '/images?api_key=c8e8c5853cd1fa6ba48f561f7b4f168f'), true);
-  // foreach ($images['backdrops'] as $image) {
-  //   // list($width, $height) = getimagesize('https://image.tmdb.org/t/p/w500' . $image['file_path']);
-  //   // if ($width > $height) {
-  //   array_push($pics, $image['file_path']);
-  //   // }
-  // }
-
-  // $movieDetails = [
-  //   'id' => $contentMovie['id'],
-  //   'originalTitle' => $contentMovie['original_title'],
-  //   'originalLanguage' => $contentMovie['original_language'],
-  //   'title' => $contentMovie['title'],
-  //   'poster' => $pic,
-  //   'background' => $backPic,
-  //   'mainColor' => $mainColor,
-  //   'website' => $web,
-  //   'genres' => $genres,
-  //   'synop' => $contentMovie['overview'],
-  //   'productionCompanies' => $productionCompanies,
-  //   'time' => convertToHoursMins($contentMovie['runtime'], '%02dh%02dm'),
-  //   'date' => $contentMovie['release_date'],
-  //   'note' => $contentMovie['vote_average'],
-  //   'cast' => $cast,
-  //   'crew' => $crew,
-  //   'pagePic' => 'https://image.tmdb.org/t/p/w200' . $contentMovie['poster_path'],
-  //   'video' => $video,
-  //   'pics' => $pics,
-  //   'similar' => $similar,
-  // ];
-
-  // return $movieDetails;
+  return $celebrityDetails;
 }

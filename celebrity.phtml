@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="<?= $celebrity['pic'] ?>" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" type="text/css" href="slider/slick/slick.css" />
+  <link rel="stylesheet" type="text/css" href="slider/slick/slick-theme.css" />
+  <link rel="stylesheet" href="css/style.css">
+  <title><?= $celebrity['name'] ?></title>
+</head>
+
+<body>
+  <nav class="navbar">
+    <ul class="menu">
+      <li class="item">
+        <select name="lang" id="lang" onchange="changeLang(this);">
+          <?php
+          foreach ($languages as $lang) {
+            if ($_COOKIE["lang"] == $lang['value']) { ?>
+              <option value="<?= $lang['value'] ?>" selected='selected'><?= $lang['name'] ?></option>
+            <?php } else { ?>
+              <option value="<?= $lang['value'] ?>"><?= $lang['name'] ?></option>
+            <?php } ?>
+          <?php } ?>
+        </select>
+      </li>
+      <li class="item">Connexion</li>
+    </ul>
+  </nav>
+  <div id="container">
+    <a href="index.php" id="back2"></a>
+    <div id="top" style="color: black;">
+      <div id="poster">
+        <div class="contentImg">
+          <img src="<?= $celebrity['pic'] ?>" alt="celebrity pic" class="pics">
+        </div>
+      </div>
+      <div id="celebrityInfo">
+        <h1 class="title titleMain"><?= $celebrity['name'] ?></h1>
+        <?php if ($celebrity['bio'] != '') { ?>
+          <div class="section" id="bio" style="align-items: baseline;">
+            <h2 class="title titleSecond">Bio:</h2>
+            <p class="text" style="text-indent: 25px;"><?= $celebrity['bio'] ?></p>
+          </div>
+        <?php } ?>
+        <?php if ($celebrity['birth'] != null) { ?>
+          <div class="section" id="birth" style="align-items: baseline;">
+            <h2 class="title titleSecond">Date et lieu de naissance:</h2>
+            <p class="text"><?= $celebrity['birth'] ?> (<?= $celebrity['place'] ?>)</p>
+          </div>
+        <?php } ?>
+        <?php if ($celebrity['death'] != null) { ?>
+          <div class="section" id="death" style="align-items: baseline;">
+            <h2 class="title titleSecond">Date de décès:</h2>
+            <p class="text"><?= $celebrity['death'] ?></p>
+          </div>
+        <?php } ?>
+        <?php if ($celebrity['job'] != null) { ?>
+          <div class="section" id="job" style="align-items: baseline;">
+            <h2 class="title titleSecond">Profession:</h2>
+            <p class="text"><?= $celebrity['job'] ?></p>
+          </div>
+        <?php } ?>
+      </div>
+    </div>
+    <div id="bottom">
+      <div class="blocInfo">
+        <h2 class="title titleMain">Connu pour</h2>
+        <!-- <div class="select">
+          <div class="choice">
+            <input type="radio" id="movieSelect" name="typeKnow" value="movieSelect" checked>
+            <label for="movieSelect">Films</label>
+          </div>
+          <div class="choice">
+            <input type="radio" id="serialSelect" name="typeKnow" value="serialSelect">
+            <label for="serialSelect">TV / Séries</label>
+          </div>
+        </div> -->
+        <div id="knows">
+          <div class="section slider" id="knowsMovies">
+            <?php
+            foreach ($celebrity['movies'] as $movie) { ?>
+              <a href="details.php?id=<?= $movie['id'] ?>" class="movies">
+                <div class="contentImg" style="margin: auto;">
+                  <img src="<?= $movie['poster'] ?>" alt="movie pic" class="pics">
+                  <?php
+                  $dateMovies = $movie['date'];
+                  $date1Movies = new DateTime($dateMovies);
+                  $today = new DateTime();
+                  if ($today > $date1Movies && $movie['voteCount'] != 0) {
+                  ?>
+                    <svg viewbox="0 0 36 36" class="note">
+                      <?php
+                      $noteMovies = round((float)$movie['note'] * 10);
+                      if (!is_decimal(round($movie['note'], 1))) {
+                        if (strlen(round($movie['note'], 1)) == 2) {
+                          $xPos = 9;
+                        } else {
+                          $xPos = 13;
+                        }
+                      } else {
+                        $xPos = 7;
+                      }
+                      if ($noteMovies >= 75) { ?>
+                        <path stroke-dasharray="<?= $noteMovies ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='#4CC790' class="circle"></path>
+                      <?php } else if ($noteMovies < 75 && $noteMovies >= 50) { ?>
+                        <path stroke-dasharray="<?= $noteMovies ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='yellow' class="circle"></path>
+                      <?php } else if ($noteMovies < 50 && $noteMovies >= 25) { ?>
+                        <path stroke-dasharray="<?= $noteMovies ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='orange' class="circle"></path>
+                      <?php } else if ($noteMovies < 25) { ?>
+                        <path stroke-dasharray="<?= $noteMovies ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='red' class="circle"></path>
+                      <?php } ?>
+                      <text x="<?= $xPos ?>" y="23" class="noteVal"><?= round($movie['note'], 1) ?></text>
+                    </svg>
+                  <?php } ?>
+                  <?php if ($movie['date'] != null) { ?>
+                    <small class="date"><?= $movie['date'] ?></small>
+                  <?php } ?>
+                </div>
+                <h2 class="title titleMovie" style="margin: auto;"><?= $movie['originalTitle'] ?></h2>
+                <h3 class="title titleSecond" style="margin: auto;"><?= $movie['title'] ?></h3>
+              </a>
+            <?php } ?>
+          </div>
+          <!-- <div class="section slider" id="knowsSerials">
+            <php
+            foreach ($celebrity['serials'] as $movie) { ?>
+              <a href="details.php?id=<= $movie['id'] ?>" class="movies">
+                <div class="contentImg" style="margin: auto;">
+                  <img src="<= $movie['poster'] ?>" alt="movie pic" class="pics">
+                  <php
+                  $dateMovies = $movie['date'];
+                  $date1Movies = new DateTime($dateMovies);
+                  $today = new DateTime();
+                  if ($today > $date1Movies && $movie['voteCount'] != 0) {
+                  ?>
+                    <svg viewbox="0 0 36 36" class="note">
+                      <php
+                      $noteMovies = round((float)$movie['note'] * 10);
+                      if (!is_decimal(round($movie['note'], 1))) {
+                        if (strlen(round($movie['note'], 1)) == 2) {
+                          $xPos = 9;
+                        } else {
+                          $xPos = 13;
+                        }
+                      } else {
+                        $xPos = 7;
+                      }
+                      if ($noteMovies >= 75) { ?>
+                        <path stroke-dasharray="<= $noteMovies ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='#4CC790' class="circle"></path>
+                      <php } else if ($noteMovies < 75 && $noteMovies >= 50) { ?>
+                        <path stroke-dasharray="<= $noteMovies ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='yellow' class="circle"></path>
+                      <php } else if ($noteMovies < 50 && $noteMovies >= 25) { ?>
+                        <path stroke-dasharray="<= $noteMovies ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='orange' class="circle"></path>
+                      <php } else if ($noteMovies < 25) { ?>
+                        <path stroke-dasharray="<= $noteMovies ?>,100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke='red' class="circle"></path>
+                      <php } ?>
+                      <text x="<= $xPos ?>" y="23" class="noteVal"><= round($movie['note'], 1) ?></text>
+                    </svg>
+                  <php } ?>
+                  <php if ($movie['date'] != null) { ?>
+                    <small class="date"><= $movie['date'] ?></small>
+                  <php } ?>
+                </div>
+                <h2 class="title titleMovie" style="margin: auto;"><= $movie['originalTitle'] ?></h2>
+                <h3 class="title titleSecond" style="margin: auto;"><= $movie['title'] ?></h3>
+              </a>
+            <php } ?>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script type="text/javascript" src="slider/slick/slick.min.js"></script>
+  <script src="js/lottie.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    $('#knowsMovies.slider').slick({
+      arrows: false,
+      infinite: true,
+      slidesToShow: 5,
+      slidesToScroll: 5,
+      dots: false,
+      autoplay: true,
+      autoplaySpeed: 2000,
+      responsive: [{
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
+        }
+      }, {
+        breakpoint: 1000,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+        }
+      }, {
+        breakpoint: 700,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+        }
+      }, {
+        breakpoint: 500,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      }],
+    });
+
+    // $('#knowsSerials.slider').slick({
+    //   arrows: false,
+    //   infinite: true,
+    //   slidesToShow: 5,
+    //   slidesToScroll: 5,
+    //   dots: false,
+    //   autoplay: true,
+    //   autoplaySpeed: 2000,
+    //   responsive: [{
+    //     breakpoint: 1200,
+    //     settings: {
+    //       slidesToShow: 4,
+    //       slidesToScroll: 4,
+    //     }
+    //   }, {
+    //     breakpoint: 1000,
+    //     settings: {
+    //       slidesToShow: 3,
+    //       slidesToScroll: 3,
+    //     }
+    //   }, {
+    //     breakpoint: 700,
+    //     settings: {
+    //       slidesToShow: 2,
+    //       slidesToScroll: 2,
+    //     }
+    //   }, {
+    //     breakpoint: 500,
+    //     settings: {
+    //       slidesToShow: 1,
+    //       slidesToScroll: 1,
+    //     },
+    //   }],
+    // });
+
+    let backIcon = document.getElementById('back2');
+    let animation = bodymovin.loadAnimation({
+      container: backIcon,
+      path: 'images/back2.json',
+      renderer: 'svg',
+      autoplay: false,
+      loop: true,
+    });
+
+    $(backIcon).mouseover(() => {
+      animation.play();
+    });
+    $(backIcon).mouseout(() => {
+      animation.stop();
+    });
+  </script>
+</body>
+
+</html>

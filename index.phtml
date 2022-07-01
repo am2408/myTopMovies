@@ -34,7 +34,7 @@
       <div id="popular" class="list">
         <?php
         foreach ($popularMovies as $popularMovie) { ?>
-          <a href="details.php?id=<?= $popularMovie['id'] ?>" class="movies">
+          <a href="details.php?id=<?= $popularMovie['id'] ?>&url=index.php" class="movies">
             <div class="contentImg">
               <img src="<?= $popularMovie['image'] ?>" alt="movie pic" class="pics">
               <svg viewbox="0 0 36 36" class="note">
@@ -69,7 +69,7 @@
       <div id="overrated" class="list">
         <?php
         foreach ($topRatedMovies as $topRatedMovie) { ?>
-          <a href="details.php?id=<?= $topRatedMovie['id'] ?>" class="movies">
+          <a href="details.php?id=<?= $topRatedMovie['id'] ?>&url=index.php" class="movies">
             <div class="contentImg">
               <img src="<?= $topRatedMovie['image'] ?>" alt="movie pic" class="pics">
               <svg class="note">
@@ -108,7 +108,7 @@
           $date1 = new DateTime($date);
           $today = new DateTime();
         ?>
-          <a href="details.php?id=<?= $upcomingMovie['id'] ?>" class="movies">
+          <a href="details.php?id=<?= $upcomingMovie['id'] ?>&url=index.php" class="movies">
             <div class="contentImg">
               <img src="<?= $upcomingMovie['image'] ?>" alt="movie pic" class="pics">
               <?php if ($today > $date1) { ?>
