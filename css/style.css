@@ -47,6 +47,29 @@ body {
     list-style: none;
 }
 
+#search {
+    display: flex;
+    flex-direction: column;
+}
+
+#search input {
+    padding: 10px 15px;
+    margin: 10px;
+    border: 1px solid #aaa;
+    border-radius: 2rem;
+}
+
+#search a {
+    background-color: rgb(67, 80, 255);
+    color: white;
+    display: inline-block;
+    margin-right: 10px;
+    margin-left: auto;
+    padding: 15px;
+    border-radius: 2rem;
+    text-decoration: none;
+}
+
 .headSection .section {
     width: 90%;
     margin: auto;
