@@ -6,6 +6,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="#" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" type="text/css" href="slider/slick/slick.css" />
+  <link rel="stylesheet" type="text/css" href="slider/slick/slick-theme.css" />
   <link rel="stylesheet" href="css/style.css">
   <title>My Top 100 Movies</title>
 </head>
@@ -29,12 +32,12 @@
     </ul>
   </nav>
   <div id="container">
-    <div class="section">
+    <div class="headSection">
       <h1 class="title titleMain">Films les plus populaire</h1>
-      <div id="popular" class="list">
+      <div id="popular" class="section slider">
         <?php
         foreach ($popularMovies as $popularMovie) { ?>
-          <a href="details.php?id=<?= $popularMovie['id'] ?>&url=index.php" class="movies">
+          <a href="details.php?id=<?= $popularMovie['id'] ?>" class="movies">
             <div class="contentImg">
               <img src="<?= $popularMovie['image'] ?>" alt="movie pic" class="pics">
               <svg viewbox="0 0 36 36" class="note">
@@ -62,14 +65,17 @@
             <h3 class="title titleSecond"><?= $popularMovie['title'] ?></h3>
           </a>
         <?php } ?>
+        <a href="all.php?id=popular" class="last movies">
+          Tout voir...
+        </a>
       </div>
     </div>
-    <div class="section">
+    <div class="headSection">
       <h1 class="title titleMain">Films les mieux notés</h1>
-      <div id="overrated" class="list">
+      <div id="overrated" class="section slider">
         <?php
         foreach ($topRatedMovies as $topRatedMovie) { ?>
-          <a href="details.php?id=<?= $topRatedMovie['id'] ?>&url=index.php" class="movies">
+          <a href="details.php?id=<?= $topRatedMovie['id'] ?>" class="movies">
             <div class="contentImg">
               <img src="<?= $topRatedMovie['image'] ?>" alt="movie pic" class="pics">
               <svg class="note">
@@ -97,18 +103,21 @@
             <h3 class="title titleSecond"><?= $topRatedMovie['title'] ?></h3>
           </a>
         <?php } ?>
+        <a href="all.php?id=overrated" class="last movies">
+          Tout voir...
+        </a>
       </div>
     </div>
-    <div class="section">
+    <div class="headSection">
       <h1 class="title titleMain">Dernière sortie ou à venir</h1>
-      <div id="upcoming" class="list">
+      <div id="upcoming" class="section slider">
         <?php
         foreach ($upcomingMovies as $upcomingMovie) {
           $date = $upcomingMovie['date'];
           $date1 = new DateTime($date);
           $today = new DateTime();
         ?>
-          <a href="details.php?id=<?= $upcomingMovie['id'] ?>&url=index.php" class="movies">
+          <a href="details.php?id=<?= $upcomingMovie['id'] ?>" class="movies">
             <div class="contentImg">
               <img src="<?= $upcomingMovie['image'] ?>" alt="movie pic" class="pics">
               <?php if ($today > $date1) { ?>
@@ -138,10 +147,118 @@
             <h3 class="title titleSecond"><?= $upcomingMovie['title'] ?></h3>
           </a>
         <?php } ?>
+        <a href="all.php?id=upcoming" class="last movies">
+          Tout voir...
+        </a>
       </div>
     </div>
   </div>
-  <script src="js/main.js" defer></script>
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script type="text/javascript" src="slider/slick/slick.min.js"></script>
+  <script src="js/lottie.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    $('#popular.slider').slick({
+      arrows: true,
+      infinite: false,
+      slidesToShow: 5,
+      slidesToScroll: 5,
+      dots: false,
+      autoplay: false,
+      responsive: [{
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
+        }
+      }, {
+        breakpoint: 1000,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+        }
+      }, {
+        breakpoint: 700,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+        }
+      }, {
+        breakpoint: 500,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      }],
+    });
+    $('#overrated.slider').slick({
+      arrows: true,
+      infinite: false,
+      slidesToShow: 5,
+      slidesToScroll: 5,
+      dots: false,
+      autoplay: false,
+      responsive: [{
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
+        }
+      }, {
+        breakpoint: 1000,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+        }
+      }, {
+        breakpoint: 700,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+        }
+      }, {
+        breakpoint: 500,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      }],
+    });
+    $('#upcoming.slider').slick({
+      arrows: true,
+      infinite: false,
+      slidesToShow: 5,
+      slidesToScroll: 5,
+      dots: false,
+      autoplay: false,
+      responsive: [{
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 4,
+        }
+      }, {
+        breakpoint: 1000,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+        }
+      }, {
+        breakpoint: 700,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+        }
+      }, {
+        breakpoint: 500,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      }],
+    });
+  </script>
 </body>
 
 </html>

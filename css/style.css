@@ -47,6 +47,11 @@ body {
     list-style: none;
 }
 
+.headSection .section {
+    width: 90%;
+    margin: auto;
+}
+
 .section {
     display: flex;
     flex-wrap: wrap;
@@ -56,24 +61,15 @@ body {
     width: 100%;
 }
 
-.list {
-    display: flex;
-    margin: 15px;
-    overflow: hidden;
-    overflow-x: scroll;
-    background-image: linear-gradient(to right, white, white), linear-gradient(to right, white, white), linear-gradient(to right, rgba(0, 0, 20, .75), rgba(255, 255, 255, 0)), linear-gradient(to left, rgba(0, 0, 20, .75), rgba(255, 255, 255, 0));
-    background-position: left center, right center, left center, right center;
-    background-repeat: no-repeat;
-    background-color: white;
-    background-size: 20px 100%, 20px 100%, 10px 100%, 10px 100%;
-    background-attachment: local, local, scroll, scroll;
-}
-
 .movies {
     position: relative;
     margin: 15px;
     text-decoration: none;
     color: black;
+}
+
+.movies>* {
+    margin: auto;
 }
 
 .movies .pics {
@@ -139,6 +135,15 @@ body {
     font-family: 'Goudy Old Style';
     color: lightslategray;
     font-style: italic;
+}
+
+.headSection .section a.last {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    color: #aaa;
+    font-size: 20px;
 }
 
 

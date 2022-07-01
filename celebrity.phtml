@@ -85,7 +85,7 @@
             <?php
             foreach ($celebrity['movies'] as $movie) { ?>
               <a href="details.php?id=<?= $movie['id'] ?>" class="movies">
-                <div class="contentImg" style="margin: auto;">
+                <div class="contentImg">
                   <img src="<?= $movie['poster'] ?>" alt="movie pic" class="pics">
                   <?php
                   $dateMovies = $movie['date'];
@@ -121,8 +121,8 @@
                     <small class="date"><?= $movie['date'] ?></small>
                   <?php } ?>
                 </div>
-                <h2 class="title titleMovie" style="margin: auto;"><?= $movie['originalTitle'] ?></h2>
-                <h3 class="title titleSecond" style="margin: auto;"><?= $movie['title'] ?></h3>
+                <h2 class="title titleMovie"><?= $movie['originalTitle'] ?></h2>
+                <h3 class="title titleSecond"><?= $movie['title'] ?></h3>
               </a>
             <?php } ?>
           </div>
@@ -130,7 +130,7 @@
             <php
             foreach ($celebrity['serials'] as $movie) { ?>
               <a href="details.php?id=<= $movie['id'] ?>" class="movies">
-                <div class="contentImg" style="margin: auto;">
+                <div class="contentImg">
                   <img src="<= $movie['poster'] ?>" alt="movie pic" class="pics">
                   <php
                   $dateMovies = $movie['date'];
@@ -166,8 +166,8 @@
                     <small class="date"><= $movie['date'] ?></small>
                   <php } ?>
                 </div>
-                <h2 class="title titleMovie" style="margin: auto;"><= $movie['originalTitle'] ?></h2>
-                <h3 class="title titleSecond" style="margin: auto;"><= $movie['title'] ?></h3>
+                <h2 class="title titleMovie"><= $movie['originalTitle'] ?></h2>
+                <h3 class="title titleSecond"><= $movie['title'] ?></h3>
               </a>
             <php } ?>
           </div> -->
